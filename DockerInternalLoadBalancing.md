@@ -1,17 +1,15 @@
 # Docker Swarm Internal Load Balancing
 
 This document attempts to explain how load balancing between Docker Swarm services are handled. It is assumed
-that you know how to create overlay networks and services in a Docker Swarm. 
+that you know how to overlay networks and services work in a Docker Swarm. 
 
 Let's look at two services connected to an overlay network. The first service is a web service and the second
 service is a REST api. For simplicity, we assume that the web service runs with a single instance while the api 
 runs with two instances.
 
-[image]
-
 Assuming the api service was not specifically created with `--endpoint-mode` to `dnsrr`, the api service will be
-reachable from the web service on the hostname which is the very same as the api service name. So, if api service 
-name is `api` the web container may resolve the hostname `api` to the VIP address of the api service.
+reachable from web container(s) via the api service name and any service aliases. If the api service name is `api` 
+the web container may resolve the hostname `api` to the VIP address of the api service.
 
 ```
 root@e7905051b7bb:/# dig api | grep "\sA\s"
