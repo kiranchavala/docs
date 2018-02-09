@@ -13,6 +13,12 @@ Assuming the api service was not specifically created with `--endpoint-mode` to 
 reachable from the web service on the hostname which is the very same as the api service name. So, if api service 
 name is `api` the web container may resolve the hostname `api` to the VIP address of the api service.
 
+```
+root@e7905051b7bb:/# dig api | grep "\sA\s"
+api.			600	IN	A	172.50.0.37
+``
+
+
 ## Who is on the other end?
 
 The VIP address which the `api` hostname resolves leads to somewhere. After all, we know that load balancing takes
@@ -20,7 +26,7 @@ place and that traffic to the api service get distributed onto the two instances
 
 Let's look at iptables in the web container. Let's use nsenter to switch to the namespace of the web container.
 
-`sudo nsenter --net=/run/docker/netns/83c5b5bffa3f`
+`administrator@docker02:~$ sudo nsenter --net=/run/docker/netns/83c5b5bffa3f`
 
 Now that we've switched, let's look at iptables.
 
@@ -44,3 +50,4 @@ Chain OUTPUT (policy ACCEPT 558K packets, 45M bytes)
 Chain POSTROUTING (policy ACCEPT 326K packets, 26M bytes)
  pkts bytes target     prot opt in     out     source               destination         
 ```
+
