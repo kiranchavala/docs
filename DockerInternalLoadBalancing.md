@@ -1,4 +1,4 @@
-#Docker Swarm Internal Load Balancing
+# Docker Swarm Internal Load Balancing
 
 This document attempts to explain how load balancing between Docker Swarm services are handled. It is assumed
 that you know how to create overlay networks and services in a Docker Swarm. 
@@ -24,7 +24,8 @@ Let's look at iptables in the web container. Let's use nsenter to switch to the 
 
 Now that we've switched, let's look at iptables.
 
-`root@docker02:~# iptables -vL -t mangle
+```
+root@docker02:~# iptables -vL -t mangle
 Chain PREROUTING (policy ACCEPT 313K packets, 29M bytes)
  pkts bytes target     prot opt in     out     source               destination         
 
@@ -42,4 +43,4 @@ Chain OUTPUT (policy ACCEPT 558K packets, 45M bytes)
 
 Chain POSTROUTING (policy ACCEPT 326K packets, 26M bytes)
  pkts bytes target     prot opt in     out     source               destination         
-`
+```
