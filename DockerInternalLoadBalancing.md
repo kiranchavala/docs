@@ -16,7 +16,7 @@ name is `api` the web container may resolve the hostname `api` to the VIP addres
 ```
 root@e7905051b7bb:/# dig api | grep "\sA\s"
 api.			600	IN	A	172.50.0.37
-``
+```
 
 
 ## Who is on the other end?
