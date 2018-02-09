@@ -76,7 +76,7 @@ FWM  317                             44981   231280   218415 19264401 22763535
   -> 172.50.0.41:0                   21937   115545   103936  9544368 10970396
 ```
 
-What a good match! Packets marked with '0x13d` (or 317) gets load balanced to `172.50.0.40` or `172.50.0.41`. The load
+What a good match! Packets marked with `0x13d` (or 317) gets load balanced to `172.50.0.40` or `172.50.0.41`. The load
 balancing is taken care of inside the web task by IPVS. 
 
 ## That's it!
