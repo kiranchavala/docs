@@ -51,3 +51,34 @@ Chain POSTROUTING (policy ACCEPT 326K packets, 26M bytes)
  pkts bytes target     prot opt in     out     source               destination         
 ```
 
+So far so good, we know that the web container resolves the hostname `api` to `172.50.0.37`. We also know that packets
+with destination `172.50.0.37` get marked with `0x13d`. 
+
+## Who's looking for that mark?
+
+Packets going to `172.50.0.37` get marked with `0x13d`. Let's head over to `ipvsadm` to see how that mark is being used.
+
+We're still in the web container's network namespace.
+
+```
+root@docker02:~# ipvsadm -L -n --stats
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port               Conns   InPkts  OutPkts  InBytes OutBytes
+  -> RemoteAddress:Port
+FWM  296                            105116   827026   774414 55260589 51457957
+  -> 172.50.0.21:0                   92972   729968   711766 49472933 47539945
+FWM  315                                 2       12        8      788      830
+  -> 172.50.0.34:0                       2       12        8      788      830
+FWM  317                             44981   231280   218415 19264401 22763535
+  -> 172.50.0.40:0                   21936   109838   109631  9246909 11278325
+  -> 172.50.0.41:0                   21937   115545   103936  9544368 10970396
+```
+
+What a good match! Packets marked with '0x13d` (or 317) gets load balanced to `172.50.0.40` or `172.50.0.41`. The load
+balancing is taken care of inside the web container by IPVS. 
+
+## That's it!
+
+That is all there is to it. Docker's DNS will resolve service names to a VIP address. Packets going to that VIP will be
+marked by iptables, and subsequently picked up by IPVS. IPVS will then take care of the actual load balancing. This all
+happens within the container where packets originate from.
